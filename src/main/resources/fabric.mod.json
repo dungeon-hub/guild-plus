@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "guild-plus",
+  "version": "${version}",
+  "name": "Guild+",
+  "description": "Improves the Hypixel guild experience with cleaner bridge messages, customizable chat formatting, and additional quality-of-life features.",
+  "authors": [
+    "Taubsie"
+  ],
+  "contact": {
+    "homepage": "https://dungeon-hub.net/",
+    "discord": "https://discord.dungeon-hub.net/",
+    "sources": "https://github.com/dungeon-hub/guild-plus/"
+  },
+  "license": "EUPL-1.2",
+  "icon": "assets/guild-plus/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.dungeonhub.guildplus.GuildPlus"
+      }
+    ]
+  },
+  "mixins": [
+    {
+      "config": "guild-plus.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "resourcefulconfig": ">=4.0.1"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.dungeon-hub.net/"
+      }
+    }
+  }
+}
