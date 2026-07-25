@@ -8,28 +8,15 @@ The primary goal of Guild+ is to make guild chat easier to read while remaining 
 
 ### Discord Bridge
 
-- [ ] Clean formatting for Discord bridge messages
-- [ ] Custom bridge prefix (e.g. `Bridge >`)
-- [ ] Hide redundant bot usernames and ranks
-- [ ] Custom colors and formatting
-- [ ] Highlight Discord usernames
-- [ ] Bridge message indicators/icons
+- [x] Clean formatting for Discord bridge messages
+- [x] Custom bridge prefix per origin (e.g. `Bridge >` by default, `Discord >` for discord messages)
+- [x] Hide redundant bot usernames and ranks
 
 ### Guild Chat
 
-- [ ] Chat formatting customization
-- [ ] Mention highlighting
-- [ ] Keyword highlighting
-- [ ] Timestamp support
-- [ ] Compact guild chat mode
-
-### Quality of Life
-
-- [ ] Configuration GUI
-- [ ] Customizable colors
-- [ ] Per-feature enable/disable
-- [ ] Import/export configuration
-- [ ] Performance-focused implementation
+- [x] Chat formatting customization
+- [x] Customizable colors
+- [x] Per-feature enable/disable
 
 ## Example
 

@@ -21,6 +21,8 @@ object BridgeChatFeature {
     val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
 
     fun handleBridgeMessage(component: Component): Component? {
+        if(!FeaturesCategory.formatBridgeChat) return null
+
         val text = ChatFormatting.stripFormatting(component.string) ?: return null
         val matcher = pattern.matcher(text)
 
