@@ -21,7 +21,7 @@ class BridgeChatTest {
 
     @Test
     fun testBridgeChatParsing() {
-        val formatResult = BridgeChatFeature.formatBridgeMessage(Component.literal("Guild > [VIP] DHMain [Admin]: [DC] Taubsie: test2 @qX"))
+        val formatResult = BridgeChatFeature.handleBridgeMessage(Component.literal("Guild > [VIP] DHMain [Admin]: [DC] Taubsie: test2 @qX"))
 
         assertNotNull(formatResult)
         assertEquals("Bridge > [DC] Taubsie: test2 @qX", formatResult.string)
@@ -38,9 +38,9 @@ class BridgeChatTest {
                 "D. Kalahari " +
                 "E. Gobi"
 
-        BridgeChatFeature.formatBridgeMessage(Component.literal(testMessage))
+        BridgeChatFeature.handleBridgeMessage(Component.literal(testMessage))
 
-        verify(exactly = 1) { BridgeChatFeature["handleBotMessage"](any<String>()) }
+        verify(exactly = 1) { BridgeChatFeature["handleBotMessage"](any<String>(), any<Boolean>()) }
         verify(exactly = 1) { PromptOverlayApi.setOverlay(any<Overlay>()) }
     }
 

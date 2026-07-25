@@ -20,7 +20,7 @@ object BridgeChatFeature {
     val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
     val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
 
-    fun formatBridgeMessage(component: Component): Component? {
+    fun handleBridgeMessage(component: Component): Component? {
         val text = ChatFormatting.stripFormatting(component.string) ?: return null
         val matcher = pattern.matcher(text)
 
@@ -55,6 +55,10 @@ object BridgeChatFeature {
             if(isOfficer) " (Staff)" else ""
         } ${AppearanceCategory.separator} "
 
+        if(user == null) {
+            handleBotMessage(message, isOfficer)
+        }
+
         return buildBridgeMessage(prefix, prefixColor, displayUser, userColor, message, messageColor)
     }
 
@@ -71,14 +75,12 @@ object BridgeChatFeature {
                                 .append(messageComponent)
                         )
                 } else {
-                    handleBotMessage(message)
-
                     messageComponent
                 }
             )
     }
 
-    private fun handleBotMessage(message: String) {
+    private fun handleBotMessage(message: String, isOfficer: Boolean) {
         val match = triviaRegex.matchEntire(message) ?: return
 
         val question = match.groups["question"]?.value ?: return
@@ -88,10 +90,10 @@ object BridgeChatFeature {
 
         when (options.size) {
             4 -> {
-                PromptOverlayApi.setOverlay(FourOptionsTriviaOverlay(question, options))
+                PromptOverlayApi.setOverlay(FourOptionsTriviaOverlay(question, options, isOfficer))
             }
             5 -> {
-                PromptOverlayApi.setOverlay(FiveOptionsTriviaOverlay(question, options))
+                PromptOverlayApi.setOverlay(FiveOptionsTriviaOverlay(question, options, isOfficer))
             }
             else -> {
                 Minecraft.getInstance().sendMessage(Component.literal("[G+] Encountered a trivia quiz with an incorrect amount of options. Please report this!").withStyle(ChatFormatting.RED))
