@@ -15,7 +15,10 @@ import java.util.regex.Pattern
 
 object BridgeChatFeature {
     private val logger = LoggerFactory.getLogger(BridgeChatFeature::class.java)
-    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: ((?<user>[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
+    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?:(?<user>(?:\\[.+] )[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
+    val triviaRegex = Regex("Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
+    val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
+    val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
 
     fun formatBridgeMessage(component: Component): Component? {
         val text = ChatFormatting.stripFormatting(component.string) ?: return null
@@ -26,7 +29,7 @@ object BridgeChatFeature {
         val type = matcher.group("type")
         val isOfficer = type == "Officer"
         val bot = matcher.group("bot")
-        val user = matcher.group("user")
+        val user: String? = matcher.group("user")
         val message = matcher.group("message")
 
         if(FeaturesCategory.bridgeUsers.none { it.equals(bot, true) }) return null
@@ -34,26 +37,38 @@ object BridgeChatFeature {
         logger.sendDevDebug("Original message:")
         logger.sendDevDebug(component)
 
-        val prefix = if (isOfficer) {
-            "Bridge (Staff) > "
-        } else {
-            "Bridge > "
+        val originTag = user?.let { originTagRegex.matchEntire(it) }?.groups?.get("tag")?.value
+
+        val messageOverwrite = AppearanceCategory.bridgeMessageOverwriteByTags.firstOrNull { overwrite ->
+            originTag != null && overwrite.enabled && overwrite.tag == originTag
         }
 
-        val messageComponent = Component.literal(message)
-            .withColor(AppearanceCategory.messageColor)
+        val displayUser = if(!(messageOverwrite?.displayTag ?: true)) {
+            user?.replaceFirst("[$originTag] ", "")
+        } else user
 
-        return Component.literal(prefix)
-            .withColor(AppearanceCategory.prefixColor)
+        val messageColor = messageOverwrite?.messageColor ?: AppearanceCategory.messageColor
+        val prefixColor = messageOverwrite?.prefixColor ?: AppearanceCategory.prefixColor
+        val userColor = messageOverwrite?.userColor ?: AppearanceCategory.userColor
+
+        val prefix = "${(messageOverwrite?.prefix?.takeIf { it.isNotBlank() } ?: "Bridge")}${
+            if(isOfficer) " (Staff)" else ""
+        } ${AppearanceCategory.separator} "
+
+        return buildBridgeMessage(prefix, prefixColor, displayUser, userColor, message, messageColor)
+    }
+
+    fun buildBridgeMessage(prefix: String, prefixColor: Int, user: String?, userColor: Int, message: String, messageColor: Int): Component {
+        val messageComponent = Component.literal(message)
+            .withColor(messageColor)
+
+        return Component.literal(prefix).withColor(prefixColor)
             .append(
                 if(user != null) {
-                    Component.literal(user)
-                        .withColor(AppearanceCategory.userColor)
+                    Component.literal(user).withColor(userColor)
                         .append(
                             Component.literal(": ").withStyle(ChatFormatting.GRAY)
-                                .append(
-                                    messageComponent
-                                )
+                                .append(messageComponent)
                         )
                 } else {
                     handleBotMessage(message)
@@ -64,14 +79,10 @@ object BridgeChatFeature {
     }
 
     private fun handleBotMessage(message: String) {
-        val triviaRegex = Regex("Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
-
         val match = triviaRegex.matchEntire(message) ?: return
 
         val question = match.groups["question"]?.value ?: return
         val optionsText = match.groups["options"]?.value ?: return
-
-        val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
 
         val options = optionsRegex.findAll(optionsText).map { it.groupValues[1] }.toList()
 
