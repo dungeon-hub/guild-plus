@@ -36,6 +36,12 @@
     "minecraft": "${minecraft_version}",
     "resourcefulconfig": ">=4.0.1"
   },
+  "suggests": {
+    "prompt-overlay": "*"
+  },
+  "breaks": {
+    "prompt-overlay": "<0.4.0"
+  },
   "custom": {
     "modmenu": {
       "links": {

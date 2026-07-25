@@ -2,15 +2,20 @@ package net.dungeonhub.guildplus.feature
 
 import net.dungeonhub.guildplus.config.categories.AppearanceCategory
 import net.dungeonhub.guildplus.config.categories.FeaturesCategory
+import net.dungeonhub.guildplus.overlay.FiveOptionsTriviaOverlay
+import net.dungeonhub.guildplus.overlay.FourOptionsTriviaOverlay
 import net.dungeonhub.guildplus.util.MessageUtil.sendDevDebug
+import net.dungeonhub.guildplus.util.MessageUtil.sendMessage
+import net.dungeonhub.promptoverlay.PromptOverlayApi
 import net.minecraft.ChatFormatting
+import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import org.slf4j.LoggerFactory
 import java.util.regex.Pattern
 
 object BridgeChatFeature {
     private val logger = LoggerFactory.getLogger(BridgeChatFeature::class.java)
-    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: ((?<user>[^:>]+)(?::| >) )?(?<message>.*)")
+    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: ((?<user>[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
 
     fun formatBridgeMessage(component: Component): Component? {
         val text = ChatFormatting.stripFormatting(component.string) ?: return null
@@ -51,8 +56,35 @@ object BridgeChatFeature {
                                 )
                         )
                 } else {
+                    handleBotMessage(message)
+
                     messageComponent
                 }
             )
+    }
+
+    private fun handleBotMessage(message: String) {
+        val triviaRegex = Regex("Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
+
+        val match = triviaRegex.matchEntire(message) ?: return
+
+        val question = match.groups["question"]?.value ?: return
+        val optionsText = match.groups["options"]?.value ?: return
+
+        val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
+
+        val options = optionsRegex.findAll(optionsText).map { it.groupValues[1] }.toList()
+
+        when (options.size) {
+            4 -> {
+                PromptOverlayApi.setOverlay(FourOptionsTriviaOverlay(question, options))
+            }
+            5 -> {
+                PromptOverlayApi.setOverlay(FiveOptionsTriviaOverlay(question, options))
+            }
+            else -> {
+                Minecraft.getInstance().sendMessage(Component.literal("[G+] Encountered a trivia quiz with an incorrect amount of options. Please report this!").withStyle(ChatFormatting.RED))
+            }
+        }
     }
 }
