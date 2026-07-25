@@ -6,7 +6,7 @@ import java.awt.Color
 
 object AppearanceCategory : CategoryKt("appearance") {
     override val name: TranslatableValue
-        get() = Literal("Apperance")
+        get() = Literal("Appearance")
 
     val prefixColor by color("prefix_color", Color(0x00AAAA).rgb) {
         name = Literal("Prefix color")

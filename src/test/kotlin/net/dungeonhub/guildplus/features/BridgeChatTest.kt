@@ -9,7 +9,6 @@ import net.dungeonhub.promptoverlay.api.KeyMappingProvider
 import net.dungeonhub.promptoverlay.api.render.Overlay
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.chat.Component
-import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.test.BeforeTest
@@ -18,7 +17,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class BridgeChatTest {
-    private val logger = LoggerFactory.getLogger("BridgeChatTest")
     private val tempConfigDir: Path = Files.createTempDirectory("guildplus-test")
 
     @Test
