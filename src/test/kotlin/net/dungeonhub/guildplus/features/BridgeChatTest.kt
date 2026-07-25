@@ -58,6 +58,7 @@ class BridgeChatTest {
         every { GuildPlus.isDev } returns false
 
         mockkObject(FeaturesCategory)
+        every { FeaturesCategory.formatBridgeChat } returns true
         every { FeaturesCategory.bridgeUsers } returns arrayOf("DHMain")
 
         mockkObject(PromptOverlayApi)
