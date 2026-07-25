@@ -16,7 +16,7 @@ The primary goal of Guild+ is to make guild chat easier to read while remaining 
 
 - [x] Chat formatting customization
 - [x] Customizable colors
-- [ ] Per-feature enable/disable
+- [x] Per-feature enable/disable
 
 ## Example
 
