@@ -4,6 +4,7 @@ import io.mockk.*
 import net.dungeonhub.guildplus.GuildPlus
 import net.dungeonhub.guildplus.config.categories.FeaturesCategory
 import net.dungeonhub.guildplus.feature.BridgeChatFeature
+import net.dungeonhub.guildplus.overlay.FiveOptionsTriviaOverlay
 import net.dungeonhub.promptoverlay.PromptOverlayApi
 import net.dungeonhub.promptoverlay.api.KeyMappingProvider
 import net.dungeonhub.promptoverlay.api.render.Overlay
@@ -41,7 +42,7 @@ class BridgeChatTest {
         BridgeChatFeature.handleBridgeMessage(Component.literal(testMessage))
 
         verify(exactly = 1) { BridgeChatFeature["handleBotMessage"](any<String>(), any<Boolean>()) }
-        verify(exactly = 1) { PromptOverlayApi.setOverlay(any<Overlay>()) }
+        verify(exactly = 1) { PromptOverlayApi.setOverlay(any<FiveOptionsTriviaOverlay>()) }
     }
 
     @BeforeTest
