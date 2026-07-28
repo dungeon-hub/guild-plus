@@ -2,6 +2,7 @@ package net.dungeonhub.guildplus.features
 
 import io.mockk.*
 import net.dungeonhub.guildplus.GuildPlus
+import net.dungeonhub.guildplus.config.categories.AppearanceCategory
 import net.dungeonhub.guildplus.config.categories.FeaturesCategory
 import net.dungeonhub.guildplus.feature.BridgeChatFeature
 import net.dungeonhub.guildplus.overlay.FiveOptionsTriviaOverlay
@@ -26,6 +27,20 @@ class BridgeChatTest {
 
         assertNotNull(formatResult)
         assertEquals("Bridge > [DC] Taubsie: test2 @qX", formatResult.string)
+    }
+
+    @Test
+    fun testMessageOverwrite() {
+        val overwrite = AppearanceCategory.BridgeMessageOverwrite()
+        overwrite.tag = "TAG"
+        overwrite.prefix = "OverwrittenPrefix"
+
+        mockkObject(AppearanceCategory)
+        AppearanceCategory.bridgeMessageOverwriteByTags = mutableListOf(overwrite)
+
+        val testMessage = "Guild > [VIP] DHMain [Admin]: [TAG] Taubsie: test2 @qX"
+
+        assertEquals("OverwrittenPrefix > [TAG] Taubsie: test2 @qX", BridgeChatFeature.handleBridgeMessage(Component.literal(testMessage))?.string)
     }
 
     @Test

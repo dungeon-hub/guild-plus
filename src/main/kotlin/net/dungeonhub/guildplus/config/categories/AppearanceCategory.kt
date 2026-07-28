@@ -58,12 +58,12 @@ object AppearanceCategory : CategoryKt("appearance") {
     @JvmField
     @ConfigEntry(id = "bridge_message_overwrite_by_tag", translation = "Message overwrite by tag")
     @Comment(value = "If your bridge bot supports origin tags, you can choose to overwrite the colors and other settings per origin tag.")
-    var bridgeMessageOverwriteByTags: MutableList<BridgeMessageOverwrite> = mutableListOf(BridgeMessageOverwrite())
+    var bridgeMessageOverwriteByTags: MutableList<BridgeMessageOverwrite> = mutableListOf()
 
     init {
         element(
             ParsedListEntryElement("bridge_message_overwrite_by_tag", ParsedListEntry(
-                ::bridgeMessageOverwriteByTags.javaField, BridgeMessageOverwrite::class.java, mutableListOf<BridgeMessageOverwrite>()
+                ::bridgeMessageOverwriteByTags.javaField, BridgeMessageOverwrite::class.java, bridgeMessageOverwriteByTags
             ))
         )
     }
