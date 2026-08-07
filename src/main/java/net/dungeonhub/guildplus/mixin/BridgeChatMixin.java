@@ -1,6 +1,7 @@
 package net.dungeonhub.guildplus.mixin;
 
 import net.dungeonhub.guildplus.feature.BridgeChatFeature;
+import net.dungeonhub.guildplus.feature.DiscordWarningRemover;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,10 +17,19 @@ public abstract class BridgeChatMixin {
 
     @Inject(method = "addServerSystemMessage", at = @At("HEAD"), cancellable = true)
     public void addServerSystemMessage(Component message, CallbackInfo ci) {
-        Component result = BridgeChatFeature.INSTANCE.handleBridgeMessage(message);
+        Component bridgeResult = BridgeChatFeature.INSTANCE.handleBridgeMessage(message);
 
-        if(result != null) {
-            addClientSystemMessage(result);
+        if(bridgeResult != null) {
+            addClientSystemMessage(bridgeResult);
+            ci.cancel();
+
+            return;
+        }
+
+        Component discordWarningResult = DiscordWarningRemover.INSTANCE.handleMessage(message);
+
+        if(discordWarningResult != null) {
+            addClientSystemMessage(discordWarningResult);
             ci.cancel();
         }
     }
