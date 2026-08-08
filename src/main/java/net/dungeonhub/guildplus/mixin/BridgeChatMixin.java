@@ -17,7 +17,8 @@ public abstract class BridgeChatMixin {
 
     @Inject(method = "addServerSystemMessage", at = @At("HEAD"), cancellable = true)
     public void addServerSystemMessage(Component message, CallbackInfo ci) {
-        Component bridgeResult = BridgeChatFeature.INSTANCE.handleBridgeMessage(message);
+        Component discordWarningResult = DiscordWarningRemover.INSTANCE.handleMessage(message);
+        Component bridgeResult = BridgeChatFeature.INSTANCE.handleBridgeMessage(discordWarningResult != null ? discordWarningResult : message);
 
         if(bridgeResult != null) {
             addClientSystemMessage(bridgeResult);
@@ -26,7 +27,7 @@ public abstract class BridgeChatMixin {
             return;
         }
 
-        Component discordWarningResult = DiscordWarningRemover.INSTANCE.handleMessage(message);
+
 
         if(discordWarningResult != null) {
             addClientSystemMessage(discordWarningResult);
