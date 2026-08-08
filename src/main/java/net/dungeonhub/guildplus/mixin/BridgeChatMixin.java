@@ -27,8 +27,6 @@ public abstract class BridgeChatMixin {
             return;
         }
 
-
-
         if(discordWarningResult != null) {
             addClientSystemMessage(discordWarningResult);
             ci.cancel();
