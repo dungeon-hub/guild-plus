@@ -15,8 +15,8 @@ import java.util.regex.Pattern
 
 object BridgeChatFeature {
     private val logger = LoggerFactory.getLogger(BridgeChatFeature::class.java)
-    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?:(?<user>(?:\\[.+] )[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
-    val triviaRegex = Regex("Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
+    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?:(?<user>(?:\\[[^\\]]+] )?[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
+    val triviaRegex = Regex("(\\{f} )?Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
     val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
     val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
 
