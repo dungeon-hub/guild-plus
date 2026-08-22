@@ -43,6 +43,11 @@ class BridgeChatTest {
 
         assertNotNull(formatResult)
         assertEquals("OverwrittenPrefix > Ploik: Party > [MVP+] GoldenSword6: some chat message", formatResult.string)
+
+        val untaggedFormatResult = BridgeChatFeature.handleBridgeMessage(Component.literal("Guild > [VIP] DHMain [Admin]: Ploik: Party > [MVP+] GoldenSword6: some chat message"))
+
+        assertNotNull(untaggedFormatResult)
+        assertEquals("Bridge > Ploik: Party > [MVP+] GoldenSword6: some chat message", untaggedFormatResult.string)
     }
 
     @Test
@@ -64,6 +69,23 @@ class BridgeChatTest {
         mockkObject(BridgeChatFeature, recordPrivateCalls = true)
 
         val testMessage = "Guild > [VIP] DHMain [Admin]: Quick Trivia: Which desert stretches across northern China and southern Mongolia? " +
+                "A. Sahara " +
+                "B. Atacama " +
+                "C. Mojave " +
+                "D. Kalahari " +
+                "E. Gobi"
+
+        BridgeChatFeature.handleBridgeMessage(Component.literal(testMessage))
+
+        verify(exactly = 1) { BridgeChatFeature["handleBotMessage"](any<String>(), any<Boolean>()) }
+        verify(exactly = 1) { PromptOverlayApi.setOverlay(any<FiveOptionsTriviaOverlay>()) }
+    }
+
+    @Test
+    fun testTriviaOverlayWithFormattingPrefix() {
+        mockkObject(BridgeChatFeature, recordPrivateCalls = true)
+
+        val testMessage = "Guild > [VIP] DHMain [Admin]: {f} Quick Trivia: Which desert stretches across northern China and southern Mongolia? " +
                 "A. Sahara " +
                 "B. Atacama " +
                 "C. Mojave " +
