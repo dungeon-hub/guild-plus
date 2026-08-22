@@ -30,6 +30,22 @@ class BridgeChatTest {
     }
 
     @Test
+    fun testUsernameDetection() {
+        val overwrite = AppearanceCategory.BridgeMessageOverwrite()
+        overwrite.tag = "TAG"
+        overwrite.prefix = "OverwrittenPrefix"
+        overwrite.displayTag = false
+
+        mockkObject(AppearanceCategory)
+        AppearanceCategory.bridgeMessageOverwriteByTags = mutableListOf(overwrite)
+
+        val formatResult = BridgeChatFeature.handleBridgeMessage(Component.literal("Guild > [VIP] DHMain [Admin]: [TAG] Ploik: Party > [MVP+] GoldenSword6: some chat message"))
+
+        assertNotNull(formatResult)
+        assertEquals("OverwrittenPrefix > Ploik: Party > [MVP+] GoldenSword6: some chat message", formatResult.string)
+    }
+
+    @Test
     fun testMessageOverwrite() {
         val overwrite = AppearanceCategory.BridgeMessageOverwrite()
         overwrite.tag = "TAG"
