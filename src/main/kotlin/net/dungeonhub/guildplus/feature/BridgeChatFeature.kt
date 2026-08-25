@@ -20,6 +20,21 @@ object BridgeChatFeature {
     val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
     val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
 
+    fun shouldBlockBridgeMessage(component: Component): Boolean {
+        val text = ChatFormatting.stripFormatting(component.string) ?: return false
+        val matcher = pattern.matcher(text)
+
+        if(!matcher.find() || matcher.groupCount() < 3) return false
+
+        val bot = matcher.group("bot")
+        val user = matcher.group("user") ?: return false
+
+        if(FeaturesCategory.bridgeUsers.none { it.equals(bot, true) }) return false
+
+        val userName = user.substringAfter("] ", user)
+        return FeaturesCategory.blockedUsers.any { it.equals(userName, true) }
+    }
+
     fun handleBridgeMessage(component: Component): Component? {
         if(!FeaturesCategory.formatBridgeChat) return null
 
