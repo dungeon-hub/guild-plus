@@ -16,7 +16,9 @@ import java.nio.file.Path
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class BridgeChatTest {
     private val tempConfigDir: Path = Files.createTempDirectory("guildplus-test")
@@ -27,6 +29,51 @@ class BridgeChatTest {
 
         assertNotNull(formatResult)
         assertEquals("Bridge > [DC] Taubsie: test2 @qX", formatResult.string)
+    }
+
+    @Test
+    fun testBlockedUser() {
+        every { FeaturesCategory.blockedUsers } returns arrayOf("Taubsie")
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Taubsie: blocked message")
+
+        assertTrue(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testBotMessageWithoutUserIsNotBlocked() {
+        every { FeaturesCategory.blockedUsers } returns arrayOf("Taubsie")
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Quick Trivia: A question")
+
+        assertFalse(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testSimilarUsernameIsNotBlocked() {
+        every { FeaturesCategory.blockedUsers } returns arrayOf("Taubsie")
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Taubsie2: visible message")
+
+        assertFalse(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testBlockedUsernameMatchingIsCaseInsensitive() {
+        every { FeaturesCategory.blockedUsers } returns arrayOf("tAuBsIe")
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: TAUBSIE: blocked message")
+
+        assertTrue(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testBlockedUsernameIgnoresOriginTag() {
+        every { FeaturesCategory.blockedUsers } returns arrayOf("Taubsie")
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: [DC] Taubsie: blocked message")
+
+        assertTrue(BridgeChatFeature.shouldBlockBridgeMessage(message))
     }
 
     @Test
@@ -113,6 +160,7 @@ class BridgeChatTest {
         mockkObject(FeaturesCategory)
         every { FeaturesCategory.formatBridgeChat } returns true
         every { FeaturesCategory.bridgeUsers } returns arrayOf("DHMain")
+        every { FeaturesCategory.blockedUsers } returns emptyArray()
 
         mockkObject(PromptOverlayApi)
         every { PromptOverlayApi["getKeyMappingProvider"]() }.answers {

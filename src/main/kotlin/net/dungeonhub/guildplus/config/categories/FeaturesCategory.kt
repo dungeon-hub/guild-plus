@@ -17,6 +17,11 @@ object FeaturesCategory : CategoryKt("features") {
         description = Literal("Add the bridge bots in your guild here.")
     }
 
+    val blockedUsers by stringsWithId("blocked_users") {
+        name = Literal("Blocked Users")
+        description = Literal("Messages from these bridge users will not be displayed.")
+    }
+
     val hideDiscordWarning by boolean("hide_discord_warning", false) {
         name = Literal("Hide Discord Warning")
         description = Literal("Hides the discord warning that appears when \"Discord\" is written in the chat.")
