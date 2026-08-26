@@ -66,7 +66,7 @@ dependencies {
         isTransitive = false
     }
 
-    val promptOverlayApi = "net.dungeon-hub.prompt-overlay:api:${project.property("minecraft_version")}-0.2.0"
+    val promptOverlayApi = "net.dungeon-hub.prompt-overlay:api:${project.property("minecraft_version")}-0.3.0"
     implementation(promptOverlayApi)
     shadow(promptOverlayApi) {
         isTransitive = false

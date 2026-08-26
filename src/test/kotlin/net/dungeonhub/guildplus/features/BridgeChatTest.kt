@@ -8,6 +8,7 @@ import net.dungeonhub.guildplus.feature.BridgeChatFeature
 import net.dungeonhub.guildplus.overlay.FiveOptionsTriviaOverlay
 import net.dungeonhub.promptoverlay.PromptOverlayApi
 import net.dungeonhub.promptoverlay.api.KeyMappingProvider
+import net.dungeonhub.promptoverlay.api.SetOverlayResult
 import net.dungeonhub.promptoverlay.api.render.Overlay
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.network.chat.Component
@@ -177,6 +178,6 @@ class BridgeChatTest {
         }
 
         mockkStatic(PromptOverlayApi::class)
-        every { PromptOverlayApi.setOverlay(any<Overlay>()) }.returns(true)
+        every { PromptOverlayApi.setOverlay(any<Overlay>()) }.returns(SetOverlayResult.Queued)
     }
 }

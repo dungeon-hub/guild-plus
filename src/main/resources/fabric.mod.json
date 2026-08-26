@@ -40,7 +40,7 @@
     "prompt-overlay": "*"
   },
   "breaks": {
-    "prompt-overlay": "<0.4.0"
+    "prompt-overlay": "<0.5.0"
   },
   "custom": {
     "modmenu": {
