@@ -14,7 +14,7 @@ object MessageUtil {
             throw RuntimeException(message)
         } else if (DevCategory.extendedDebug) {
             Minecraft.getInstance().execute {
-                Minecraft.getInstance().gui.chat.addClientSystemMessage(
+                Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(
                     Component.literal(message).setStyle(Style.EMPTY.withColor(ChatFormatting.RED))
                 )
             }
@@ -26,7 +26,7 @@ object MessageUtil {
     fun Logger.sendDevDebug(message: Component) {
         if (GuildPlus.isDev || DevCategory.extendedDebug) {
             Minecraft.getInstance().execute {
-                Minecraft.getInstance().gui.chat.addClientSystemMessage(
+                Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(
                     message
                 )
             }
@@ -38,7 +38,7 @@ object MessageUtil {
     fun Logger.sendDevDebug(message: String) {
         if (GuildPlus.isDev || DevCategory.extendedDebug) {
             Minecraft.getInstance().execute {
-                Minecraft.getInstance().gui.chat.addClientSystemMessage(
+                Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(
                     Component.literal(message).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
                 )
             }
@@ -50,7 +50,7 @@ object MessageUtil {
     fun Logger.sendDebug(message: String) {
         if (GuildPlus.isDev || DevCategory.extendedDebug) {
             Minecraft.getInstance().execute {
-                Minecraft.getInstance().gui.chat.addClientSystemMessage(
+                Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(
                     Component.literal(message).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))
                 )
             }
@@ -66,7 +66,7 @@ object MessageUtil {
      */
     fun Minecraft.sendMessage(component: Component, additionalLogic: () -> Unit = {}) {
         execute {
-            gui.chat.addClientSystemMessage(component)
+            gui.hud.chat.addClientSystemMessage(component)
             additionalLogic()
         }
     }

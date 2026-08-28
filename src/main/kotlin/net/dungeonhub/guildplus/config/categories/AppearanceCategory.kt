@@ -26,8 +26,8 @@ object AppearanceCategory : CategoryKt("appearance") {
             text = "Send example"
             onClick {
                 Minecraft.getInstance().execute {
-                    Minecraft.getInstance().setScreen(null)
-                    Minecraft.getInstance().gui.chat.addClientSystemMessage(
+                    Minecraft.getInstance().gui.setScreen(null)
+                    Minecraft.getInstance().gui.hud.chat.addClientSystemMessage(
                         BridgeChatFeature.buildBridgeMessage("Example $separator ", prefixColor, "Taubsie", userColor, "Hello there!", messageColor)
                     )
                 }
