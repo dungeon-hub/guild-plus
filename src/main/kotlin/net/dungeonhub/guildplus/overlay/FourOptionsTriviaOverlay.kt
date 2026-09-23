@@ -5,11 +5,11 @@ import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import java.awt.Color
 
-open class FourOptionsTriviaOverlay(question: String, options: List<String>, isOfficer: Boolean): FourActionsOverlay {
-    override val firstText = "[${firstOptionKey()}] ${options[0]}"
-    override val secondText = "[${secondOptionKey()}] ${options[1]}"
-    override val thirdText = "[${thirdOptionKey()}] ${options[2]}"
-    override val fourthText = "[${fourthOptionKey()}] ${options[3]}"
+open class FourOptionsTriviaOverlay(question: String, val options: List<String>, isOfficer: Boolean): FourActionsOverlay {
+    override val firstText get() = "[${firstOptionKey()}] ${options[0]}"
+    override val secondText get() = "[${secondOptionKey()}] ${options[1]}"
+    override val thirdText get() = "[${thirdOptionKey()}] ${options[2]}"
+    override val fourthText get() = "[${fourthOptionKey()}] ${options[3]}"
 
     val command = if(isOfficer) "oc" else "gc"
 

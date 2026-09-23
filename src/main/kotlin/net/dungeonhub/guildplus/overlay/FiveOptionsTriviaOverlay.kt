@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component
 import java.awt.Color
 
 class FiveOptionsTriviaOverlay(question: String, options: List<String>, isOfficer: Boolean) : FourOptionsTriviaOverlay(question, options, isOfficer), FiveActionsOverlay {
-    override val fifthText = "[${fifthOptionKey()}] ${options[4]}"
+    override val fifthText get() = "[${fifthOptionKey()}] ${options[4]}"
 
     override fun fifthOption() {
         Minecraft.getInstance().execute {
