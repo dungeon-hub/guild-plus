@@ -1,8 +1,10 @@
 package net.dungeonhub.guildplus.mixin;
 
+import net.dungeonhub.guildplus.config.categories.FeaturesCategory;
 import net.dungeonhub.guildplus.feature.BridgeChatFeature;
 import net.dungeonhub.guildplus.feature.DiscordWarningRemover;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.multiplayer.chat.GuiMessage;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,5 +38,15 @@ public abstract class BridgeChatMixin {
             addClientSystemMessage(discordWarningResult);
             ci.cancel();
         }
+    }
+
+    @Inject(method = "addMessageToQueue", at = @At(value = "INVOKE", target = "Ljava/util/List;removeLast()Ljava/lang/Object;"), cancellable = true)
+    private void addMessage(GuiMessage message, CallbackInfo ci) {
+        if(FeaturesCategory.INSTANCE.getUnlimitedChat()) ci.cancel();
+    }
+
+    @Inject(method = "addMessageToDisplayQueue", at = @At(value = "INVOKE", target = "Ljava/util/List;removeLast()Ljava/lang/Object;"), cancellable = true)
+    private void addVisibleMessage(GuiMessage message, CallbackInfo ci) {
+        if(FeaturesCategory.INSTANCE.getUnlimitedChat()) ci.cancel();
     }
 }
