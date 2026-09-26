@@ -26,4 +26,9 @@ object FeaturesCategory : CategoryKt("features") {
         name = Literal("Hide Discord Warning")
         description = Literal("Hides the discord warning that appears when \"Discord\" is written in the chat.")
     }
+
+    val unlimitedChat by boolean("unlimited_chat", false) {
+        name = Literal("Unlimited Chat")
+        description = Literal("Makes your chat unlimited (old messages don't get removed).\nNote: A lot of other mods do the exact same thing, and probably better, so please use them instead!")
+    }
 }
