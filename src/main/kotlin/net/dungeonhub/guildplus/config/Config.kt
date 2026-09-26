@@ -1,5 +1,6 @@
 package net.dungeonhub.guildplus.config
 
+import com.mojang.blaze3d.Blaze3D
 import com.teamresourceful.resourcefulconfig.api.types.options.TranslatableValue
 import com.teamresourceful.resourcefulconfigkt.api.ConfigKt
 import net.dungeonhub.guildplus.GuildPlus
@@ -7,7 +8,7 @@ import net.dungeonhub.guildplus.GuildPlus.MOD_ID
 import net.dungeonhub.guildplus.config.categories.AppearanceCategory
 import net.dungeonhub.guildplus.config.categories.DevCategory
 import net.dungeonhub.guildplus.config.categories.FeaturesCategory
-import net.minecraft.util.Util
+import java.net.URI
 import java.time.LocalDate
 import java.time.Month
 
@@ -34,7 +35,7 @@ object Config : ConfigKt("$MOD_ID/config") {
             description = "This is open source!"
             text = "Open"
             onClick {
-                Util.getPlatform().openUri("https://github.com/dungeon-hub/guild-plus")
+                Blaze3D.openUri(URI.create("https://github.com/dungeon-hub/guild-plus"))
             }
         }
 
@@ -43,7 +44,7 @@ object Config : ConfigKt("$MOD_ID/config") {
             description = "For questions and support, check out our discord"
             text = "Join"
             onClick {
-                Util.getPlatform().openUri("https://discord.dungeon-hub.net/")
+                Blaze3D.openUri(URI.create("https://discord.dungeon-hub.net/"))
             }
         }
 
@@ -52,7 +53,7 @@ object Config : ConfigKt("$MOD_ID/config") {
             description = "Support our development costs and keep the servers running"
             text = "Patreon"
             onClick {
-                Util.getPlatform().openUri("https://www.patreon.com/dungeon_hub/")
+                Blaze3D.openUri(URI.create("https://www.patreon.com/dungeon_hub/"))
             }
         }
     }
