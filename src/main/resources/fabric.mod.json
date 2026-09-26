@@ -39,9 +39,6 @@
   "suggests": {
     "prompt-overlay": "*"
   },
-  "breaks": {
-    "prompt-overlay": "<0.5.0"
-  },
   "custom": {
     "modmenu": {
       "links": {
