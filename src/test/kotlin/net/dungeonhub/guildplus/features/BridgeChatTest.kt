@@ -78,6 +78,42 @@ class BridgeChatTest {
     }
 
     @Test
+    fun testDarkAuctionReminderIsBlockedWhenEnabled() {
+        every { FeaturesCategory.hideDarkAuctionReminder } returns true
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Dark Auction in 5 minutes!")
+
+        assertTrue(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testDarkAuctionReminderIsNotBlockedWhenDisabled() {
+        every { FeaturesCategory.hideDarkAuctionReminder } returns false
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Dark Auction in 5 minutes!")
+
+        assertFalse(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testStarfallReminderIsBlockedWhenEnabled() {
+        every { FeaturesCategory.hideStarfallReminder } returns true
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Reminder: Star Cult is here.")
+
+        assertTrue(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
+    fun testStarfallReminderIsNotBlockedWhenDisabled() {
+        every { FeaturesCategory.hideStarfallReminder } returns false
+
+        val message = Component.literal("Guild > [VIP] DHMain [Admin]: Reminder: Star Cult is here.")
+
+        assertFalse(BridgeChatFeature.shouldBlockBridgeMessage(message))
+    }
+
+    @Test
     fun testUsernameDetection() {
         val overwrite = AppearanceCategory.BridgeMessageOverwrite()
         overwrite.tag = "TAG"
@@ -162,6 +198,8 @@ class BridgeChatTest {
         every { FeaturesCategory.formatBridgeChat } returns true
         every { FeaturesCategory.bridgeUsers } returns arrayOf("DHMain")
         every { FeaturesCategory.blockedUsers } returns emptyArray()
+        every { FeaturesCategory.hideDarkAuctionReminder } returns false
+        every { FeaturesCategory.hideStarfallReminder } returns false
 
         mockkObject(PromptOverlayApi)
         every { PromptOverlayApi["getKeyMappingProvider"]() }.answers {
