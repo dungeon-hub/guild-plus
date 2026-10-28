@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 
 object BridgeChatFeature {
     private val logger = LoggerFactory.getLogger(BridgeChatFeature::class.java)
-    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?:(?<user>(?:\\[[^\\]]+] )?[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
+    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?<fullmessage>(?:(?<user>(?:\\[[^\\]]+] )?[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*))")
     private val darkAuctionReminderRegex = Regex("Dark Auction in (\\d)+ minutes?!( @.*)?")
     private val starfallReminderRegex = Regex("Reminder: Star Cult is here\\..*")
     val triviaRegex = Regex("(\\{f} )?Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
@@ -34,15 +34,11 @@ object BridgeChatFeature {
             return false
         }
 
+        val fullMessage = matcher.group("fullmessage") ?: return false
+        if(shouldHideReminderMessage(fullMessage)) return true
+
         val user = matcher.group("user")
-
-        return if(user != null) {
-            shouldHideBlockedUsers(user)
-        } else {
-            val message = matcher.group("message") ?: return false
-
-            shouldHideReminderMessage(message)
-        }
+        return user != null && shouldHideBlockedUsers(user)
     }
 
     fun shouldHideBlockedUsers(user: String): Boolean {
