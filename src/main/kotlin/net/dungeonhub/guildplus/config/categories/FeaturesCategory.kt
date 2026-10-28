@@ -22,6 +22,16 @@ object FeaturesCategory : CategoryKt("features") {
         description = Literal("Messages from these bridge users will not be displayed.")
     }
 
+    val hideDarkAuctionReminder by boolean("hide_dark_auction_reminder", false) {
+        name = Literal("Hide Dark Auction reminder")
+        description = Literal("Hides the Dark Auction reminder sent by some bridge bots, since other mods like Prompt Overlay already have this feature integrated.")
+    }
+
+    val hideStarfallReminder by boolean("hide_starfall_reminder", false) {
+        name = Literal("Hide Starfall reminder")
+        description = Literal("Hides the starfall reminder sent by some bridge bots, since other mods like Prompt Overlay already have this feature integrated.")
+    }
+
     val hideDiscordWarning by boolean("hide_discord_warning", false) {
         name = Literal("Hide Discord Warning")
         description = Literal("Hides the discord warning that appears when \"Discord\" is written in the chat.")
