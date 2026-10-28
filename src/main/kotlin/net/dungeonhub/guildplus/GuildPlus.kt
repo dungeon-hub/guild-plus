@@ -30,7 +30,7 @@ object GuildPlus : ClientModInitializer {
                 ClientCommands.literal("guild-plus")
                     .executes {
                         Minecraft.getInstance().schedule {
-                            Minecraft.getInstance().setScreen(ResourcefulConfigScreen.getFactory(MOD_ID).apply(null))
+                            Minecraft.getInstance().gui.setScreen(ResourcefulConfigScreen.getFactory(MOD_ID).apply(null))
                         }
                         return@executes 1
                     }
