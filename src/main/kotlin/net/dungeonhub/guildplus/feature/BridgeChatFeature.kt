@@ -15,7 +15,9 @@ import java.util.regex.Pattern
 
 object BridgeChatFeature {
     private val logger = LoggerFactory.getLogger(BridgeChatFeature::class.java)
-    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?:(?<user>(?:\\[[^\\]]+] )?[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*)")
+    private val pattern = Pattern.compile("^(?<type>Guild|Officer) > (?:\\[[A-Z]+\\+*] )?(?<bot>(?:[A-z]|[0-9]|_){3,16})(?: \\[(?:[A-z]|[0-9]|_)+])?: (?<fullmessage>(?:(?<user>(?:\\[[^\\]]+] )?[^:> ]+)(?::| >) )?(?<message>(?:\\s|.)*))")
+    private val darkAuctionReminderRegex = Regex("Dark Auction in (\\d)+ minutes?!( @.*)?")
+    private val starfallReminderRegex = Regex("Reminder: Star Cult is here\\..*")
     val triviaRegex = Regex("(\\{f} )?Quick Trivia: (?<question>.*?) (?<options>[A-E]\\..*)")
     val optionsRegex = Regex("""[A-E]\.\s*(.*?)(?=\s+[A-E]\.\s|$)""")
     val originTagRegex = Regex("\\[(?<tag>.+)] [^:> ]+")
@@ -27,12 +29,33 @@ object BridgeChatFeature {
         if(!matcher.find() || matcher.groupCount() < 3) return false
 
         val bot = matcher.group("bot")
-        val user = matcher.group("user") ?: return false
 
-        if(FeaturesCategory.bridgeUsers.none { it.equals(bot, true) }) return false
+        if(FeaturesCategory.bridgeUsers.none { it.equals(bot, true) }) {
+            return false
+        }
 
+        val fullMessage = matcher.group("fullmessage") ?: return false
+        if(shouldHideReminderMessage(fullMessage)) return true
+
+        val user = matcher.group("user")
+        return user != null && shouldHideBlockedUsers(user)
+    }
+
+    fun shouldHideBlockedUsers(user: String): Boolean {
         val userName = user.substringAfter("] ", user)
         return FeaturesCategory.blockedUsers.any { it.equals(userName, true) }
+    }
+
+    fun shouldHideReminderMessage(message: String): Boolean {
+        if(message.matches(darkAuctionReminderRegex)) {
+            return FeaturesCategory.hideDarkAuctionReminder
+        }
+
+        if(message.matches(starfallReminderRegex)) {
+            return FeaturesCategory.hideStarfallReminder
+        }
+
+        return false
     }
 
     fun handleBridgeMessage(component: Component): Component? {
